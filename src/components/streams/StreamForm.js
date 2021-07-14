@@ -1,0 +1,50 @@
+import React from 'react';
+import {Field , reduxForm} from 'redux-form';
+
+class StreamForm extends React.Component {
+    renderError ({error , touched}){
+        if(error && touched){
+            return(
+                <div className='ui error message'>
+                    <div className='header'>{error}</div>
+                </div>
+            );
+        }
+    }
+    renderInput = ({input,lable,meta}) => {
+        const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
+        return (
+            <div className={className}>
+                <lable>{lable}</lable>
+                <input {...input}/>
+                {this.renderError(meta)}
+            </div>
+        )
+    }
+    onSubmit = (formValues) => {
+        this.props.onSubmit(formValues);
+    }
+    render(){
+        return(
+        <form onSubmit={this.props.handleSubmit(this.onSubmit)} className='ui form error'>
+            <Field name='title' component = {this.renderInput} lable='Enter the Title:'/>
+            <Field name='Descripton' component = {this.renderInput} lable='Enter Descripton: '/>
+            <button className='ui button primary'>Submit</button>
+        </form>
+        );
+    }
+}
+const validate = formValues => {
+    const errors = {};
+    if(!formValues.title){
+        errors.title = 'Please enter title';
+    }
+    if(!formValues.Descripton){
+        errors.Descripton = 'Please enter the description';
+    }
+    return errors;
+};
+export  default reduxForm({
+    form: 'streamForm',
+    validate
+})(StreamForm);
